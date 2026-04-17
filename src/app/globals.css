@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 240 10% 6%;
+  --primary: 242 84% 64%;
+  --muted: 240 5% 96%;
+}
+
+.dark {
+  --background: 240 10% 6%;
+  --foreground: 0 0% 98%;
+  --primary: 245 91% 76%;
+  --muted: 240 4% 16%;
+}
+
+body {
+  @apply bg-background text-foreground antialiased;
+}
+
+.prose-content p { @apply mb-4 leading-7; }
+.prose-content h2 { @apply mt-8 mb-3 text-2xl font-semibold; }
+.prose-content ul { @apply mb-4 ml-5 list-disc; }
+

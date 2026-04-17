@@ -1,0 +1,1356 @@
+--- FILE: .env.example ---
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT_ID.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY=YOUR_SUPABASE_SERVICE_ROLE_KEY
+ADMIN_EMAIL=you@example.com
+
+--- FILE: .eslintrc.json ---
+{
+  "extends": ["next/core-web-vitals", "next/typescript"]
+}
+
+--- FILE: .gitignore ---
+node_modules
+.next
+out
+.env.local
+.env
+.vercel
+*.log
+
+--- FILE: README.md ---
+# Tech Creator Portfolio (Next.js + Supabase)
+
+A production-style personal portfolio web app for a tech creator, built with:
+
+- **Next.js (App Router, TypeScript)**
+- **Tailwind CSS**
+- **Supabase (Postgres + Auth + optional Storage)**
+- **Vercel deployment target**
+
+## Features
+
+- Homepage with hero + featured videos, posts, and projects
+- Videos page and video detail pages with YouTube embeds
+- Blog index and blog detail pages (markdown-compatible content field)
+- Projects index and project detail pages
+- About page with background, skills, interests, resume link
+- Protected admin dashboard with CRUD actions for videos/blog/projects
+- SEO metadata per route
+- Responsive layout and reusable UI/components
+
+## Project Structure
+
+```txt
+src/
+  app/
+    page.tsx
+    videos/
+    blog/
+    projects/
+    about/
+    admin/
+  components/
+    layout/
+    sections/
+    ui/
+    admin/
+  lib/
+    supabase/
+    content.ts
+    admin-actions.ts
+  data/seed.ts
+  types/
+supabase/
+  schema.sql
+  seed.sql
+```
+
+## Environment Variables
+
+Copy `.env.example` to `.env.local` and fill values:
+
+```bash
+cp .env.example .env.local
+```
+
+Required values:
+- `NEXT_PUBLIC_SITE_URL`
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `ADMIN_EMAIL`
+
+## Supabase Setup
+
+1. Create a Supabase project.
+2. In Supabase SQL Editor, run:
+   - `supabase/schema.sql`
+   - `supabase/seed.sql` (optional starter data)
+3. In **Authentication > Users**, create your admin user and set email/password.
+4. Set `ADMIN_EMAIL` in `.env.local` to the same email.
+5. Add your app URL(s) in **Authentication > URL Configuration** for local and production callbacks.
+
+## Local Development
+
+```bash
+npm install
+npm run dev
+```
+
+Visit `http://localhost:3000`.
+
+Admin login is at `/admin/login`.
+
+## Deployment to Vercel
+
+1. Push this repo to GitHub.
+2. Import project in Vercel.
+3. Add all environment variables from `.env.example` in Vercel project settings.
+4. Deploy.
+5. Set `NEXT_PUBLIC_SITE_URL` to your deployed domain URL.
+
+## Notes
+
+- v1 intentionally uses YouTube embeds instead of native upload/transcoding.
+- If Supabase is unavailable or env vars are missing, the app falls back to local sample data (`src/data/seed.ts`).
+- You can customize placeholder text and social links from components and page files.
+
+--- FILE: next-env.d.ts ---
+/// <reference types="next" />
+/// <reference types="next/image-types/global" />
+
+// NOTE: This file should not be edited
+
+--- FILE: next.config.ts ---
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "images.unsplash.com" },
+      { protocol: "https", hostname: "i.ytimg.com" }
+    ]
+  }
+};
+
+export default nextConfig;
+
+--- FILE: package.json ---
+{
+  "name": "tech-creator-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.5.1",
+    "@supabase/supabase-js": "^2.49.8",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "lucide-react": "^0.508.0",
+    "next": "15.3.2",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.25.0",
+    "eslint-config-next": "15.3.2",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.8.3"
+  }
+}
+
+--- FILE: postcss.config.mjs ---
+export default {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {}
+  }
+};
+
+--- FILE: tailwind.config.ts ---
+import type { Config } from "tailwindcss";
+
+export default {
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}"
+  ],
+  darkMode: ["class"],
+  theme: {
+    extend: {
+      colors: {
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: "hsl(var(--primary))",
+        muted: "hsl(var(--muted))"
+      }
+    }
+  },
+  plugins: []
+} satisfies Config;
+
+--- FILE: tsconfig.json ---
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [{ "name": "next" }],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
+
+--- FILE: src/app/globals.css ---
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 240 10% 6%;
+  --primary: 242 84% 64%;
+  --muted: 240 5% 96%;
+}
+
+.dark {
+  --background: 240 10% 6%;
+  --foreground: 0 0% 98%;
+  --primary: 245 91% 76%;
+  --muted: 240 4% 16%;
+}
+
+body {
+  @apply bg-background text-foreground antialiased;
+}
+
+.prose-content p { @apply mb-4 leading-7; }
+.prose-content h2 { @apply mt-8 mb-3 text-2xl font-semibold; }
+.prose-content ul { @apply mb-4 ml-5 list-disc; }
+
+--- FILE: src/app/layout.tsx ---
+import type { Metadata } from "next";
+import "./globals.css";
+import { Navbar } from "@/components/layout/navbar";
+import { Footer } from "@/components/layout/footer";
+
+export const metadata: Metadata = {
+  title: {
+    default: "Tech Creator Portfolio",
+    template: "%s | Tech Creator"
+  },
+  description: "Professional portfolio for a tech creator showcasing videos, blog posts, and projects.",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000")
+};
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <html lang="en">
+      <body>
+        <Navbar />
+        <main className="mx-auto min-h-[80vh] max-w-6xl space-y-10 px-4 py-10">{children}</main>
+        <Footer />
+      </body>
+    </html>
+  );
+}
+
+--- FILE: src/app/page.tsx ---
+import { HeroSection } from "@/components/sections/hero";
+import { BlogCard } from "@/components/sections/blog-card";
+import { ProjectCard } from "@/components/sections/project-card";
+import { VideoCard } from "@/components/sections/video-card";
+import { getFeaturedPosts, getFeaturedProjects, getFeaturedVideos } from "@/lib/content";
+
+export default async function Home() {
+  const [videos, posts, projects] = await Promise.all([
+    getFeaturedVideos(),
+    getFeaturedPosts(),
+    getFeaturedProjects()
+  ]);
+
+  return (
+    <div className="space-y-12">
+      <HeroSection />
+      <section className="space-y-6">
+        <h2 className="text-3xl font-semibold">Featured Videos</h2>
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">{videos.map((video) => <VideoCard key={video.id} video={video} />)}</div>
+      </section>
+      <section className="space-y-6">
+        <h2 className="text-3xl font-semibold">Featured Blog Posts</h2>
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">{posts.map((post) => <BlogCard key={post.id} post={post} />)}</div>
+      </section>
+      <section className="space-y-6">
+        <h2 className="text-3xl font-semibold">Featured Projects</h2>
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">{projects.map((project) => <ProjectCard key={project.id} project={project} />)}</div>
+      </section>
+    </div>
+  );
+}
+
+--- FILE: src/app/about/page.tsx ---
+import Link from "next/link";
+
+export const metadata = { title: "About", description: "Background, skills, and interests." };
+
+export default function AboutPage() {
+  return (
+    <section className="mx-auto max-w-3xl space-y-6">
+      <h1 className="text-4xl font-bold">About Me</h1>
+      <p className="text-foreground/75">I am a solutions engineer and technical creator focused on turning complex architecture into clear and actionable execution.</p>
+      <p className="text-foreground/75">My work spans developer tooling, cloud migration strategies, API platforms, and technical storytelling for engineering teams.</p>
+      <div>
+        <h2 className="mb-2 text-xl font-semibold">Core Skills</h2>
+        <p className="text-foreground/75">System Design · APIs · Cloud Architecture · Pre/Post-Sales Engineering · Developer Enablement</p>
+      </div>
+      <div>
+        <h2 className="mb-2 text-xl font-semibold">Interests</h2>
+        <p className="text-foreground/75">Developer productivity, technical education, open-source ecosystems, and building content that helps teams ship faster.</p>
+      </div>
+      <Link href="https://example.com/resume.pdf" className="inline-block rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white" target="_blank">View Resume</Link>
+    </section>
+  );
+}
+
+--- FILE: src/app/videos/page.tsx ---
+import { VideoCard } from "@/components/sections/video-card";
+import { getVideos } from "@/lib/content";
+
+export const metadata = { title: "Videos", description: "Video explainers and technical walkthroughs." };
+
+export default async function VideosPage() {
+  const videos = await getVideos();
+  return (
+    <section className="space-y-6">
+      <h1 className="text-4xl font-bold">Videos</h1>
+      <p className="text-foreground/70">YouTube-based technical breakdowns for engineers and technical teams.</p>
+      <div className="grid gap-6 md:grid-cols-2">{videos.map((video) => <VideoCard key={video.id} video={video} />)}</div>
+    </section>
+  );
+}
+
+--- FILE: src/app/videos/[slug]/page.tsx ---
+import { notFound } from "next/navigation";
+import { Tag } from "@/components/ui/tag";
+import { extractYouTubeId } from "@/lib/utils";
+import { getVideoBySlug, getVideos } from "@/lib/content";
+
+export default async function VideoDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const video = await getVideoBySlug(slug);
+  if (!video) return notFound();
+
+  const related = (await getVideos()).filter((item) => item.id !== video.id).slice(0, 3);
+  const videoId = extractYouTubeId(video.youtube_url);
+
+  return (
+    <article className="space-y-8">
+      <div className="space-y-3">
+        <h1 className="text-4xl font-bold">{video.title}</h1>
+        <p className="text-foreground/75">{video.description}</p>
+        <div className="flex flex-wrap gap-2">{video.tags.map((tag) => <Tag key={tag} text={tag} />)}</div>
+      </div>
+      <div className="aspect-video overflow-hidden rounded-2xl border border-foreground/10">
+        <iframe src={`https://www.youtube.com/embed/${videoId}`} title={video.title} className="h-full w-full" allowFullScreen />
+      </div>
+      <section>
+        <h2 className="mb-3 text-2xl font-semibold">Related Videos</h2>
+        <ul className="space-y-2 text-sm text-foreground/75">{related.map((item) => <li key={item.id}>• {item.title}</li>)}</ul>
+      </section>
+    </article>
+  );
+}
+
+--- FILE: src/app/blog/page.tsx ---
+import { BlogCard } from "@/components/sections/blog-card";
+import { getBlogPosts } from "@/lib/content";
+
+export const metadata = { title: "Blog", description: "Technical writing, playbooks, and engineering insights." };
+
+export default async function BlogPage() {
+  const posts = await getBlogPosts();
+  return (
+    <section className="space-y-6">
+      <h1 className="text-4xl font-bold">Blog</h1>
+      <div className="grid gap-6 md:grid-cols-2">{posts.map((post) => <BlogCard key={post.id} post={post} />)}</div>
+    </section>
+  );
+}
+
+--- FILE: src/app/blog/[slug]/page.tsx ---
+import Image from "next/image";
+import { format } from "date-fns";
+import { notFound } from "next/navigation";
+import { Tag } from "@/components/ui/tag";
+import { getPostBySlug } from "@/lib/content";
+
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
+  if (!post) return notFound();
+
+  return (
+    <article className="mx-auto max-w-3xl space-y-6">
+      <p className="text-sm text-foreground/60">{format(new Date(post.published_at), "MMMM d, yyyy")}</p>
+      <h1 className="text-4xl font-bold">{post.title}</h1>
+      {post.cover_image_url && <Image src={post.cover_image_url} alt={post.title} width={1200} height={600} className="rounded-2xl object-cover" />}
+      <div className="flex flex-wrap gap-2">{post.tags.map((tag) => <Tag key={tag} text={tag} />)}</div>
+      <div className="prose-content text-foreground/90 whitespace-pre-wrap">{post.content}</div>
+    </article>
+  );
+}
+
+--- FILE: src/app/projects/page.tsx ---
+import { ProjectCard } from "@/components/sections/project-card";
+import { getProjects } from "@/lib/content";
+
+export const metadata = { title: "Projects", description: "Production-focused technical projects and case studies." };
+
+export default async function ProjectsPage() {
+  const projects = await getProjects();
+  return (
+    <section className="space-y-6">
+      <h1 className="text-4xl font-bold">Projects</h1>
+      <div className="grid gap-6 md:grid-cols-2">{projects.map((project) => <ProjectCard key={project.id} project={project} />)}</div>
+    </section>
+  );
+}
+
+--- FILE: src/app/projects/[slug]/page.tsx ---
+import Image from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { Tag } from "@/components/ui/tag";
+import { getProjectBySlug } from "@/lib/content";
+
+export default async function ProjectDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const project = await getProjectBySlug(slug);
+  if (!project) return notFound();
+
+  return (
+    <article className="space-y-6">
+      <h1 className="text-4xl font-bold">{project.name}</h1>
+      <p className="max-w-3xl text-foreground/75">{project.description}</p>
+      {project.image_url && <Image src={project.image_url} alt={project.name} width={1200} height={640} className="rounded-2xl object-cover" />}
+      <div className="flex flex-wrap gap-2">{project.tech_stack.map((item) => <Tag key={item} text={item} />)}</div>
+      <div className="flex gap-4 text-sm">
+        {project.github_url && <Link href={project.github_url} target="_blank" className="text-primary">GitHub</Link>}
+        {project.demo_url && <Link href={project.demo_url} target="_blank" className="text-primary">Live Demo</Link>}
+      </div>
+    </article>
+  );
+}
+
+--- FILE: src/app/admin/page.tsx ---
+import { redirect } from "next/navigation";
+
+export default function AdminIndexPage() {
+  redirect("/admin/videos");
+}
+
+--- FILE: src/app/admin/login/page.tsx ---
+import { signIn } from "@/lib/admin-actions";
+
+export default function AdminLoginPage() {
+  return (
+    <div className="mx-auto max-w-md rounded-2xl border border-foreground/10 p-6">
+      <h1 className="mb-6 text-2xl font-semibold">Admin Login</h1>
+      <form action={signIn} className="space-y-4">
+        <input name="email" type="email" placeholder="Email" required className="w-full rounded-lg border border-foreground/20 px-3 py-2" />
+        <input name="password" type="password" placeholder="Password" required className="w-full rounded-lg border border-foreground/20 px-3 py-2" />
+        <button className="w-full rounded-lg bg-primary px-4 py-2 text-white">Sign In</button>
+      </form>
+    </div>
+  );
+}
+
+--- FILE: src/app/admin/(dashboard)/layout.tsx ---
+import { redirect } from "next/navigation";
+import { AdminShell } from "@/components/admin/admin-shell";
+import { createClient } from "@/lib/supabase/server";
+
+export default async function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+
+  if (!data.user) redirect("/admin/login");
+  if (process.env.ADMIN_EMAIL && data.user.email !== process.env.ADMIN_EMAIL) redirect("/");
+
+  return <AdminShell>{children}</AdminShell>;
+}
+
+--- FILE: src/app/admin/(dashboard)/videos/page.tsx ---
+import { InputField, TextareaField } from "@/components/admin/form-fields";
+import { deleteVideo, upsertVideo } from "@/lib/admin-actions";
+import { getVideos } from "@/lib/content";
+
+export default async function AdminVideosPage() {
+  const items = await getVideos();
+
+  return (
+    <div className="space-y-8">
+      <h1 className="text-3xl font-semibold">Manage Videos</h1>
+      <form action={upsertVideo} className="grid gap-3 rounded-2xl border border-foreground/10 p-4">
+        <InputField label="Title" name="title" required />
+        <InputField label="Slug" name="slug" required />
+        <TextareaField label="Description" name="description" />
+        <InputField label="YouTube URL" name="youtube_url" required />
+        <InputField label="Thumbnail URL" name="thumbnail_url" />
+        <InputField label="Tags (comma-separated)" name="tags" />
+        <InputField label="Publish Date (YYYY-MM-DD)" name="published_at" required />
+        <label className="text-sm"><input type="checkbox" name="featured" /> Featured</label>
+        <button className="rounded-lg bg-primary px-4 py-2 text-white">Save Video</button>
+      </form>
+      <div className="space-y-3">
+        {items.map((item) => (
+          <div key={item.id} className="flex items-center justify-between rounded-xl border border-foreground/10 p-3 text-sm">
+            <div>{item.title}</div>
+            <form action={deleteVideo}>
+              <input type="hidden" name="id" value={item.id} />
+              <button className="text-red-500">Delete</button>
+            </form>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+--- FILE: src/app/admin/(dashboard)/blog/page.tsx ---
+import { InputField, TextareaField } from "@/components/admin/form-fields";
+import { deletePost, upsertPost } from "@/lib/admin-actions";
+import { getBlogPosts } from "@/lib/content";
+
+export default async function AdminBlogPage() {
+  const items = await getBlogPosts();
+
+  return (
+    <div className="space-y-8">
+      <h1 className="text-3xl font-semibold">Manage Blog Posts</h1>
+      <form action={upsertPost} className="grid gap-3 rounded-2xl border border-foreground/10 p-4">
+        <InputField label="Title" name="title" required />
+        <InputField label="Slug" name="slug" required />
+        <TextareaField label="Excerpt" name="excerpt" rows={2} />
+        <TextareaField label="Content (Markdown-friendly)" name="content" rows={10} />
+        <InputField label="Cover Image URL" name="cover_image_url" />
+        <InputField label="Tags (comma-separated)" name="tags" />
+        <InputField label="Publish Date (YYYY-MM-DD)" name="published_at" required />
+        <label className="text-sm"><input type="checkbox" name="featured" /> Featured</label>
+        <button className="rounded-lg bg-primary px-4 py-2 text-white">Save Post</button>
+      </form>
+      <div className="space-y-3">
+        {items.map((item) => (
+          <div key={item.id} className="flex items-center justify-between rounded-xl border border-foreground/10 p-3 text-sm">
+            <div>{item.title}</div>
+            <form action={deletePost}>
+              <input type="hidden" name="id" value={item.id} />
+              <button className="text-red-500">Delete</button>
+            </form>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+--- FILE: src/app/admin/(dashboard)/projects/page.tsx ---
+import { InputField, TextareaField } from "@/components/admin/form-fields";
+import { deleteProject, upsertProject } from "@/lib/admin-actions";
+import { getProjects } from "@/lib/content";
+
+export default async function AdminProjectsPage() {
+  const items = await getProjects();
+
+  return (
+    <div className="space-y-8">
+      <h1 className="text-3xl font-semibold">Manage Projects</h1>
+      <form action={upsertProject} className="grid gap-3 rounded-2xl border border-foreground/10 p-4">
+        <InputField label="Name" name="name" required />
+        <InputField label="Slug" name="slug" required />
+        <TextareaField label="Summary" name="summary" rows={2} />
+        <TextareaField label="Description" name="description" rows={5} />
+        <InputField label="Tech Stack (comma-separated)" name="tech_stack" />
+        <InputField label="GitHub URL" name="github_url" />
+        <InputField label="Demo URL" name="demo_url" />
+        <InputField label="Image URL" name="image_url" />
+        <InputField label="Publish Date (YYYY-MM-DD)" name="published_at" required />
+        <label className="text-sm"><input type="checkbox" name="featured" /> Featured</label>
+        <button className="rounded-lg bg-primary px-4 py-2 text-white">Save Project</button>
+      </form>
+      <div className="space-y-3">
+        {items.map((item) => (
+          <div key={item.id} className="flex items-center justify-between rounded-xl border border-foreground/10 p-3 text-sm">
+            <div>{item.name}</div>
+            <form action={deleteProject}>
+              <input type="hidden" name="id" value={item.id} />
+              <button className="text-red-500">Delete</button>
+            </form>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+--- FILE: src/components/layout/navbar.tsx ---
+import Link from "next/link";
+
+const links = [
+  { href: "/videos", label: "Videos" },
+  { href: "/blog", label: "Blog" },
+  { href: "/projects", label: "Projects" },
+  { href: "/about", label: "About" }
+];
+
+export function Navbar() {
+  return (
+    <header className="sticky top-0 z-50 border-b border-foreground/10 bg-background/90 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+        <Link href="/" className="text-lg font-semibold">
+          Tech Creator
+        </Link>
+        <nav className="flex items-center gap-5 text-sm text-foreground/80">
+          {links.map((item) => (
+            <Link key={item.href} href={item.href} className="hover:text-foreground">
+              {item.label}
+            </Link>
+          ))}
+          <Link href="/admin" className="rounded-lg border border-foreground/20 px-3 py-1.5 text-xs">
+            Admin
+          </Link>
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+--- FILE: src/components/layout/footer.tsx ---
+import Link from "next/link";
+
+export function Footer() {
+  return (
+    <footer className="border-t border-foreground/10">
+      <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 text-sm text-foreground/70 md:flex-row md:items-center md:justify-between">
+        <p>© {new Date().getFullYear()} Tech Creator. Built with Next.js + Supabase.</p>
+        <div className="flex gap-4">
+          <Link href="https://github.com" target="_blank">GitHub</Link>
+          <Link href="https://linkedin.com" target="_blank">LinkedIn</Link>
+          <Link href="https://youtube.com" target="_blank">YouTube</Link>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+--- FILE: src/components/sections/hero.tsx ---
+import { Button } from "@/components/ui/button";
+
+export function HeroSection() {
+  return (
+    <section className="grid gap-6 rounded-3xl border border-foreground/10 bg-gradient-to-br from-primary/10 to-transparent p-8 md:p-12">
+      <p className="text-sm uppercase tracking-[0.2em] text-foreground/60">Solutions Engineer & Tech Creator</p>
+      <h1 className="max-w-3xl text-4xl font-bold leading-tight md:text-6xl">I build practical software and explain complex tech clearly.</h1>
+      <p className="max-w-2xl text-lg text-foreground/75">
+        Portfolio of videos, writing, and projects focused on APIs, system design, cloud architecture, and developer enablement.
+      </p>
+      <div className="flex flex-wrap gap-3">
+        <Button href="/projects">Explore Projects</Button>
+        <Button href="/videos" className="bg-foreground text-background">Watch Videos</Button>
+      </div>
+    </section>
+  );
+}
+
+--- FILE: src/components/sections/video-card.tsx ---
+import Link from "next/link";
+import Image from "next/image";
+import { Tag } from "@/components/ui/tag";
+import { Video } from "@/types/content";
+
+export function VideoCard({ video }: { video: Video }) {
+  return (
+    <article className="group overflow-hidden rounded-2xl border border-foreground/10 bg-background">
+      <Image src={video.thumbnail_url || "https://images.unsplash.com/photo-1492619375914-88005aa9e8fb"} alt={video.title} width={800} height={450} className="h-48 w-full object-cover transition group-hover:scale-[1.02]" />
+      <div className="space-y-3 p-5">
+        <Link href={`/videos/${video.slug}`} className="text-lg font-semibold hover:text-primary">
+          {video.title}
+        </Link>
+        <p className="text-sm text-foreground/75">{video.description}</p>
+        <div className="flex flex-wrap gap-2">
+          {video.tags.map((tag) => (
+            <Tag key={tag} text={tag} />
+          ))}
+        </div>
+      </div>
+    </article>
+  );
+}
+
+--- FILE: src/components/sections/blog-card.tsx ---
+import Image from "next/image";
+import Link from "next/link";
+import { format } from "date-fns";
+import { Tag } from "@/components/ui/tag";
+import { BlogPost } from "@/types/content";
+
+export function BlogCard({ post }: { post: BlogPost }) {
+  return (
+    <article className="overflow-hidden rounded-2xl border border-foreground/10">
+      {post.cover_image_url && <Image src={post.cover_image_url} alt={post.title} width={900} height={480} className="h-48 w-full object-cover" />}
+      <div className="space-y-3 p-5">
+        <p className="text-xs text-foreground/60">{format(new Date(post.published_at), "MMMM d, yyyy")}</p>
+        <Link href={`/blog/${post.slug}`} className="text-lg font-semibold hover:text-primary">{post.title}</Link>
+        <p className="text-sm text-foreground/75">{post.excerpt}</p>
+        <div className="flex flex-wrap gap-2">{post.tags.map((tag) => <Tag key={tag} text={tag} />)}</div>
+      </div>
+    </article>
+  );
+}
+
+--- FILE: src/components/sections/project-card.tsx ---
+import Image from "next/image";
+import Link from "next/link";
+import { Tag } from "@/components/ui/tag";
+import { Project } from "@/types/content";
+
+export function ProjectCard({ project }: { project: Project }) {
+  return (
+    <article className="overflow-hidden rounded-2xl border border-foreground/10">
+      {project.image_url && <Image src={project.image_url} alt={project.name} width={900} height={480} className="h-48 w-full object-cover" />}
+      <div className="space-y-3 p-5">
+        <Link href={`/projects/${project.slug}`} className="text-lg font-semibold hover:text-primary">{project.name}</Link>
+        <p className="text-sm text-foreground/75">{project.summary}</p>
+        <div className="flex flex-wrap gap-2">{project.tech_stack.map((item) => <Tag key={item} text={item} />)}</div>
+      </div>
+    </article>
+  );
+}
+
+--- FILE: src/components/ui/button.tsx ---
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { ReactNode } from "react";
+
+const buttonClass =
+  "inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-medium transition hover:-translate-y-0.5";
+
+export function Button({ children, href, className }: { children: ReactNode; href?: string; className?: string }) {
+  if (href) {
+    return (
+      <Link href={href} className={cn(buttonClass, "bg-primary text-white", className)}>
+        {children}
+      </Link>
+    );
+  }
+
+  return <button className={cn(buttonClass, "bg-primary text-white", className)}>{children}</button>;
+}
+
+--- FILE: src/components/ui/tag.tsx ---
+export function Tag({ text }: { text: string }) {
+  return <span className="rounded-full bg-muted px-2 py-1 text-xs text-foreground/80">#{text}</span>;
+}
+
+--- FILE: src/components/admin/admin-shell.tsx ---
+import Link from "next/link";
+import { signOut } from "@/lib/admin-actions";
+
+export function AdminShell({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mx-auto grid max-w-6xl gap-6 px-4 py-8 md:grid-cols-[220px_1fr]">
+      <aside className="space-y-3 rounded-2xl border border-foreground/10 p-4">
+        <h2 className="font-semibold">Admin</h2>
+        <nav className="flex flex-col gap-2 text-sm">
+          <Link href="/admin/videos">Videos</Link>
+          <Link href="/admin/blog">Blog</Link>
+          <Link href="/admin/projects">Projects</Link>
+        </nav>
+        <form action={signOut}>
+          <button className="mt-4 rounded-lg border border-foreground/20 px-3 py-2 text-sm">Sign out</button>
+        </form>
+      </aside>
+      <main>{children}</main>
+    </div>
+  );
+}
+
+--- FILE: src/components/admin/form-fields.tsx ---
+export function InputField({ label, name, defaultValue, required = false }: { label: string; name: string; defaultValue?: string; required?: boolean }) {
+  return (
+    <label className="block space-y-1 text-sm">
+      <span>{label}</span>
+      <input name={name} defaultValue={defaultValue} required={required} className="w-full rounded-lg border border-foreground/20 bg-transparent px-3 py-2" />
+    </label>
+  );
+}
+
+export function TextareaField({ label, name, defaultValue, rows = 4 }: { label: string; name: string; defaultValue?: string; rows?: number }) {
+  return (
+    <label className="block space-y-1 text-sm">
+      <span>{label}</span>
+      <textarea name={name} defaultValue={defaultValue} rows={rows} className="w-full rounded-lg border border-foreground/20 bg-transparent px-3 py-2" />
+    </label>
+  );
+}
+
+--- FILE: src/lib/utils.ts ---
+import { clsx } from "clsx";
+
+export function cn(...inputs: Array<string | false | null | undefined>) {
+  return clsx(inputs);
+}
+
+export function extractYouTubeId(url: string): string {
+  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?]+)/);
+  return match?.[1] ?? "";
+}
+
+--- FILE: src/lib/content.ts ---
+import { samplePosts, sampleProjects, sampleVideos } from "@/data/seed";
+import { BlogPost, Project, Video } from "@/types/content";
+import { createClient } from "@/lib/supabase/server";
+
+async function tryQuery<T>(table: "videos" | "blog_posts" | "projects"): Promise<T[] | null> {
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase.from(table).select("*").order("published_at", { ascending: false });
+    if (error) return null;
+    return (data as T[]) ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export async function getVideos(): Promise<Video[]> {
+  return (await tryQuery<Video>("videos")) ?? sampleVideos;
+}
+
+export async function getFeaturedVideos() {
+  const videos = await getVideos();
+  return videos.filter((item) => item.featured).slice(0, 3);
+}
+
+export async function getVideoBySlug(slug: string) {
+  const videos = await getVideos();
+  return videos.find((item) => item.slug === slug) ?? null;
+}
+
+export async function getBlogPosts(): Promise<BlogPost[]> {
+  return (await tryQuery<BlogPost>("blog_posts")) ?? samplePosts;
+}
+
+export async function getFeaturedPosts() {
+  const posts = await getBlogPosts();
+  return posts.filter((item) => item.featured).slice(0, 3);
+}
+
+export async function getPostBySlug(slug: string) {
+  const posts = await getBlogPosts();
+  return posts.find((item) => item.slug === slug) ?? null;
+}
+
+export async function getProjects(): Promise<Project[]> {
+  return (await tryQuery<Project>("projects")) ?? sampleProjects;
+}
+
+export async function getFeaturedProjects() {
+  const projects = await getProjects();
+  return projects.filter((item) => item.featured).slice(0, 3);
+}
+
+export async function getProjectBySlug(slug: string) {
+  const projects = await getProjects();
+  return projects.find((item) => item.slug === slug) ?? null;
+}
+
+--- FILE: src/lib/admin-actions.ts ---
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+
+function parseTags(value: FormDataEntryValue | null): string[] {
+  return String(value ?? "")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+export async function signIn(formData: FormData) {
+  const email = String(formData.get("email") ?? "");
+  const password = String(formData.get("password") ?? "");
+  const supabase = await createClient();
+  await supabase.auth.signInWithPassword({ email, password });
+  redirect("/admin");
+}
+
+export async function signOut() {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  redirect("/admin/login");
+}
+
+export async function upsertVideo(formData: FormData) {
+  const supabase = await createClient();
+  const payload = {
+    id: String(formData.get("id") || "") || undefined,
+    title: String(formData.get("title")),
+    slug: String(formData.get("slug")),
+    description: String(formData.get("description")),
+    youtube_url: String(formData.get("youtube_url")),
+    thumbnail_url: String(formData.get("thumbnail_url")) || null,
+    tags: parseTags(formData.get("tags")),
+    featured: formData.get("featured") === "on",
+    published_at: String(formData.get("published_at"))
+  };
+  await supabase.from("videos").upsert(payload);
+  revalidatePath("/");
+  revalidatePath("/videos");
+  revalidatePath("/admin/videos");
+}
+
+export async function deleteVideo(formData: FormData) {
+  const supabase = await createClient();
+  await supabase.from("videos").delete().eq("id", String(formData.get("id")));
+  revalidatePath("/videos");
+  revalidatePath("/admin/videos");
+}
+
+export async function upsertPost(formData: FormData) {
+  const supabase = await createClient();
+  const payload = {
+    id: String(formData.get("id") || "") || undefined,
+    title: String(formData.get("title")),
+    slug: String(formData.get("slug")),
+    excerpt: String(formData.get("excerpt")),
+    content: String(formData.get("content")),
+    cover_image_url: String(formData.get("cover_image_url")) || null,
+    tags: parseTags(formData.get("tags")),
+    featured: formData.get("featured") === "on",
+    published_at: String(formData.get("published_at"))
+  };
+  await supabase.from("blog_posts").upsert(payload);
+  revalidatePath("/");
+  revalidatePath("/blog");
+  revalidatePath("/admin/blog");
+}
+
+export async function deletePost(formData: FormData) {
+  const supabase = await createClient();
+  await supabase.from("blog_posts").delete().eq("id", String(formData.get("id")));
+  revalidatePath("/blog");
+  revalidatePath("/admin/blog");
+}
+
+export async function upsertProject(formData: FormData) {
+  const supabase = await createClient();
+  const payload = {
+    id: String(formData.get("id") || "") || undefined,
+    name: String(formData.get("name")),
+    slug: String(formData.get("slug")),
+    summary: String(formData.get("summary")),
+    description: String(formData.get("description")),
+    tech_stack: parseTags(formData.get("tech_stack")),
+    github_url: String(formData.get("github_url")) || null,
+    demo_url: String(formData.get("demo_url")) || null,
+    image_url: String(formData.get("image_url")) || null,
+    featured: formData.get("featured") === "on",
+    published_at: String(formData.get("published_at"))
+  };
+  await supabase.from("projects").upsert(payload);
+  revalidatePath("/");
+  revalidatePath("/projects");
+  revalidatePath("/admin/projects");
+}
+
+export async function deleteProject(formData: FormData) {
+  const supabase = await createClient();
+  await supabase.from("projects").delete().eq("id", String(formData.get("id")));
+  revalidatePath("/projects");
+  revalidatePath("/admin/projects");
+}
+
+--- FILE: src/lib/supabase/client.ts ---
+import { createBrowserClient } from "@supabase/ssr";
+
+export function createClient() {
+  return createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+}
+
+--- FILE: src/lib/supabase/server.ts ---
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
+
+export async function createClient() {
+  const cookieStore = await cookies();
+
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set(name, value, options);
+          });
+        }
+      }
+    }
+  );
+}
+
+--- FILE: src/lib/supabase/middleware.ts ---
+import { createServerClient } from "@supabase/ssr";
+import { NextResponse, type NextRequest } from "next/server";
+
+export async function updateSession(request: NextRequest) {
+  let response = NextResponse.next({ request });
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value));
+          response = NextResponse.next({ request });
+          cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
+        }
+      }
+    }
+  );
+
+  await supabase.auth.getUser();
+  return response;
+}
+
+--- FILE: src/data/seed.ts ---
+import { BlogPost, Project, Video } from "@/types/content";
+
+export const sampleVideos: Video[] = [
+  {
+    id: "1",
+    title: "Distributed Systems in 15 Minutes",
+    slug: "distributed-systems-15-minutes",
+    description: "A compact explanation of core distributed systems concepts.",
+    youtube_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    thumbnail_url: "https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
+    tags: ["distributed systems", "architecture"],
+    featured: true,
+    published_at: "2026-03-01"
+  },
+  {
+    id: "2",
+    title: "System Design: API Gateway Patterns",
+    slug: "api-gateway-patterns",
+    description: "Practical API gateway design decisions for modern cloud stacks.",
+    youtube_url: "https://www.youtube.com/watch?v=ysz5S6PUM-U",
+    thumbnail_url: "https://i.ytimg.com/vi/ysz5S6PUM-U/maxresdefault.jpg",
+    tags: ["system design", "api"],
+    featured: true,
+    published_at: "2026-02-18"
+  }
+];
+
+export const samplePosts: BlogPost[] = [
+  {
+    id: "1",
+    title: "How I Scope Engineering Projects as a Solutions Engineer",
+    slug: "scoping-engineering-projects",
+    excerpt: "A practical framework for scoping projects with speed and confidence.",
+    content: "## Why scope matters\nGreat scope aligns outcomes, risks, and constraints...",
+    cover_image_url: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40",
+    tags: ["career", "solutions engineering"],
+    featured: true,
+    published_at: "2026-03-10"
+  },
+  {
+    id: "2",
+    title: "Shipping Reliable Integrations with API Contracts",
+    slug: "reliable-integrations-api-contracts",
+    excerpt: "API contracts reduce surprises and accelerate cross-team delivery.",
+    content: "## Contracts first\nDefine schemas before implementation...",
+    cover_image_url: "https://images.unsplash.com/photo-1517048676732-d65bc937f952",
+    tags: ["api", "reliability"],
+    featured: true,
+    published_at: "2026-01-21"
+  }
+];
+
+export const sampleProjects: Project[] = [
+  {
+    id: "1",
+    name: "Cloud Cost Guardrails",
+    slug: "cloud-cost-guardrails",
+    summary: "Policy-as-code checks to keep cloud spend predictable.",
+    description: "Built a policy engine and dashboard to monitor and prevent budget regressions.",
+    tech_stack: ["TypeScript", "Next.js", "Supabase", "Terraform"],
+    github_url: "https://github.com/example/cloud-cost-guardrails",
+    demo_url: "https://example.com/cost-guardrails",
+    image_url: "https://images.unsplash.com/photo-1460925895917-afdab827c52f",
+    featured: true,
+    published_at: "2026-02-01"
+  },
+  {
+    id: "2",
+    name: "Realtime Incident Timeline",
+    slug: "realtime-incident-timeline",
+    summary: "A collaborative timeline for production incident response.",
+    description: "Created a real-time event feed with auditability and searchable context.",
+    tech_stack: ["React", "Supabase Realtime", "PostgreSQL"],
+    github_url: "https://github.com/example/realtime-incident-timeline",
+    demo_url: "https://example.com/incident-timeline",
+    image_url: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31",
+    featured: true,
+    published_at: "2025-12-12"
+  }
+];
+
+--- FILE: src/types/content.ts ---
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+
+export interface Video {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  youtube_url: string;
+  thumbnail_url: string | null;
+  tags: string[];
+  featured: boolean;
+  published_at: string;
+}
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  cover_image_url: string | null;
+  tags: string[];
+  featured: boolean;
+  published_at: string;
+}
+
+export interface Project {
+  id: string;
+  name: string;
+  slug: string;
+  summary: string;
+  description: string;
+  tech_stack: string[];
+  github_url: string | null;
+  demo_url: string | null;
+  image_url: string | null;
+  featured: boolean;
+  published_at: string;
+}
+
+--- FILE: src/types/supabase.ts ---
+export type Database = {
+  public: {
+    Tables: {
+      videos: {
+        Row: {
+          id: string;
+          title: string;
+          slug: string;
+          description: string;
+          youtube_url: string;
+          thumbnail_url: string | null;
+          tags: string[];
+          featured: boolean;
+          published_at: string;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          slug: string;
+          description: string;
+          youtube_url: string;
+          thumbnail_url?: string | null;
+          tags?: string[];
+          featured?: boolean;
+          published_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["videos"]["Insert"]>;
+      };
+      blog_posts: {
+        Row: {
+          id: string;
+          title: string;
+          slug: string;
+          excerpt: string;
+          content: string;
+          cover_image_url: string | null;
+          tags: string[];
+          featured: boolean;
+          published_at: string;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          slug: string;
+          excerpt: string;
+          content: string;
+          cover_image_url?: string | null;
+          tags?: string[];
+          featured?: boolean;
+          published_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["blog_posts"]["Insert"]>;
+      };
+      projects: {
+        Row: {
+          id: string;
+          name: string;
+          slug: string;
+          summary: string;
+          description: string;
+          tech_stack: string[];
+          github_url: string | null;
+          demo_url: string | null;
+          image_url: string | null;
+          featured: boolean;
+          published_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          slug: string;
+          summary: string;
+          description: string;
+          tech_stack?: string[];
+          github_url?: string | null;
+          demo_url?: string | null;
+          image_url?: string | null;
+          featured?: boolean;
+          published_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["projects"]["Insert"]>;
+      };
+    };
+  };
+};
+
+--- FILE: src/middleware.ts ---
+import { NextRequest } from "next/server";
+import { updateSession } from "@/lib/supabase/middleware";
+
+export async function middleware(request: NextRequest) {
+  return updateSession(request);
+}
+
+export const config = {
+  matcher: ["/admin/:path*"]
+};
+
+--- FILE: supabase/schema.sql ---
+-- Enable extensions
+create extension if not exists "pgcrypto";
+
+create table if not exists public.videos (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  slug text not null unique,
+  description text not null,
+  youtube_url text not null,
+  thumbnail_url text,
+  tags text[] not null default '{}',
+  featured boolean not null default false,
+  published_at date not null default now()
+);
+
+create table if not exists public.blog_posts (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  slug text not null unique,
+  excerpt text not null,
+  content text not null,
+  cover_image_url text,
+  tags text[] not null default '{}',
+  featured boolean not null default false,
+  published_at date not null default now()
+);
+
+create table if not exists public.projects (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  slug text not null unique,
+  summary text not null,
+  description text not null,
+  tech_stack text[] not null default '{}',
+  github_url text,
+  demo_url text,
+  image_url text,
+  featured boolean not null default false,
+  published_at date not null default now()
+);
+
+alter table public.videos enable row level security;
+alter table public.blog_posts enable row level security;
+alter table public.projects enable row level security;
+
+create policy "Public can read videos"
+  on public.videos for select using (true);
+create policy "Public can read blog posts"
+  on public.blog_posts for select using (true);
+create policy "Public can read projects"
+  on public.projects for select using (true);
+
+create policy "Authenticated can manage videos"
+  on public.videos for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
+create policy "Authenticated can manage blog posts"
+  on public.blog_posts for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
+create policy "Authenticated can manage projects"
+  on public.projects for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
+
+--- FILE: supabase/seed.sql ---
+insert into public.videos (title, slug, description, youtube_url, thumbnail_url, tags, featured, published_at) values
+('Distributed Systems in 15 Minutes', 'distributed-systems-15-minutes', 'A compact explanation of core distributed systems concepts.', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg', '{"distributed systems","architecture"}', true, '2026-03-01'),
+('System Design: API Gateway Patterns', 'api-gateway-patterns', 'Practical API gateway design decisions for modern cloud stacks.', 'https://www.youtube.com/watch?v=ysz5S6PUM-U', 'https://i.ytimg.com/vi/ysz5S6PUM-U/maxresdefault.jpg', '{"system design","api"}', true, '2026-02-18');
+
+insert into public.blog_posts (title, slug, excerpt, content, cover_image_url, tags, featured, published_at) values
+('How I Scope Engineering Projects as a Solutions Engineer', 'scoping-engineering-projects', 'A practical framework for scoping projects with speed and confidence.', '## Why scope matters\nGreat scope aligns outcomes, risks, and constraints...', 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40', '{"career","solutions engineering"}', true, '2026-03-10');
+
+insert into public.projects (name, slug, summary, description, tech_stack, github_url, demo_url, image_url, featured, published_at) values
+('Cloud Cost Guardrails', 'cloud-cost-guardrails', 'Policy-as-code checks to keep cloud spend predictable.', 'Built a policy engine and dashboard to monitor and prevent budget regressions.', '{"TypeScript","Next.js","Supabase","Terraform"}', 'https://github.com/example/cloud-cost-guardrails', 'https://example.com/cost-guardrails', 'https://images.unsplash.com/photo-1460925895917-afdab827c52f', true, '2026-02-01');
