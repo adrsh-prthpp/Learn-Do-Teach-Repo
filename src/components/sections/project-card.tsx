@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { Tag } from "@/components/ui/tag";
 import { Project } from "@/types/content";
 
@@ -13,6 +14,14 @@ export function ProjectCard({ project }: { project: Project }) {
         <div className="flex gap-2">
           <Tag text={project.category} />
           {project.video_slug && <Tag text="has-video" />}
+        </div>
+        <div className="flex flex-wrap gap-3 pt-1">
+          <Button href={`/projects/${project.slug}`}>View Project</Button>
+          {project.video_slug ? (
+            <Button href={`/videos/${project.video_slug}`} className="bg-foreground text-background">
+              Watch Video
+            </Button>
+          ) : null}
         </div>
       </div>
     </article>

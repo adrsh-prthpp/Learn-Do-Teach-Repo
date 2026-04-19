@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { categoryDescriptions, learningPrinciples, topicCategories } from "@/lib/content-config";
 
 export const metadata = {
   title: "About",
@@ -7,49 +8,52 @@ export const metadata = {
 
 export default function AboutPage() {
   return (
-    <section className="mx-auto max-w-3xl space-y-6">
-      <h1 className="text-4xl font-bold">About Me</h1>
-
-      <p className="text-foreground/75">
-        I built this site around a simple idea: the best way to learn something
-        deeply is to build it and then teach it clearly. If I can explain a
-        concept, connect it to a project, and show how I applied it, that is a
-        stronger signal of understanding than just saying I studied it.
-      </p>
-
-      <p className="text-foreground/75">
-        This site is my proof-of-learning platform. Videos help me teach topics
-        back, projects let me document the demos and technical writeups behind
-        them, and blog posts give me space to share my thoughts on recent trends
-        and ideas in tech.
-      </p>
-
-      <p className="text-foreground/75">
-        Right now, my main learning tracks are AI, ML, Data, and Cloud. Over
-        time, this site will show what I studied, what I built, and how my
-        understanding evolved.
-      </p>
-
-      <div>
-        <h2 className="mb-2 text-xl font-semibold">How I Use This Site</h2>
-        <p className="text-foreground/75">
-          Each topic starts with learning, then gets reinforced through a demo or
-          project, and finally gets tested through a video explanation. Blog posts
-          are separate and are mainly for reflections, opinions, and commentary.
+    <section className="mx-auto max-w-4xl space-y-8">
+      <div className="space-y-4">
+        <p className="text-sm font-medium uppercase tracking-[0.2em] text-foreground/50">About</p>
+        <h1 className="text-4xl font-bold">I built this site to prove my learning by teaching it back.</h1>
+        <p className="max-w-3xl text-lg leading-8 text-foreground/75">
+          The site is my personal learning system for tech. Instead of only taking notes privately, I turn concepts into
+          projects, videos, and writing so I can see whether I truly understand them. Helping other people is a great
+          side effect, but the main purpose is sharpening my own thinking.
         </p>
       </div>
 
-      <div>
-        <h2 className="mb-2 text-xl font-semibold">Current Focus Areas</h2>
-        <p className="text-foreground/75">AI · ML · Data · Cloud</p>
+      <div className="grid gap-4 md:grid-cols-3">
+        {learningPrinciples.map((principle) => (
+          <article key={principle.title} className="rounded-3xl border border-foreground/10 bg-background p-5">
+            <h2 className="text-xl font-semibold">{principle.title}</h2>
+            <p className="mt-2 text-sm leading-6 text-foreground/70">{principle.description}</p>
+          </article>
+        ))}
+      </div>
+
+      <div className="space-y-4 rounded-3xl border border-foreground/10 bg-muted/50 p-6">
+        <h2 className="text-2xl font-semibold">How I use the platform</h2>
+        <p className="leading-7 text-foreground/75">
+          A topic usually starts as a question I want to understand better. I study it, build something small around it,
+          then publish the explanation as a video or post. Over time the site becomes a timeline of what I learned, how
+          I applied it, and how my understanding evolved.
+        </p>
+      </div>
+
+      <div className="space-y-4">
+        <h2 className="text-2xl font-semibold">Current learning tracks</h2>
+        <div className="grid gap-4 md:grid-cols-2">
+          {topicCategories.map((category) => (
+            <article key={category} className="rounded-3xl border border-foreground/10 bg-background p-5">
+              <h3 className="text-lg font-semibold">{category}</h3>
+              <p className="mt-2 text-sm leading-6 text-foreground/70">{categoryDescriptions[category]}</p>
+            </article>
+          ))}
+        </div>
       </div>
 
       <Link
-        href="https://example.com/resume.pdf"
-        className="inline-block rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white"
-        target="_blank"
+        href="/videos"
+        className="inline-block rounded-xl bg-primary px-5 py-3 text-sm font-medium text-white"
       >
-        View Resume
+        Start With The Videos
       </Link>
     </section>
   );

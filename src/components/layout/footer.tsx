@@ -6,7 +6,7 @@ export function Footer() {
       <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 text-sm text-foreground/70 md:flex-row md:items-center md:justify-between">
         <div className="space-y-1">
           <p>© {new Date().getFullYear()} Learn Build Teach.</p>
-          <p>A proof-of-learning platform built around videos, projects, and technical reflection.</p>
+          <p>A proof-of-learning portfolio built around teaching videos, blog posts, and project case studies.</p>
         </div>
 
         <div className="flex gap-4">

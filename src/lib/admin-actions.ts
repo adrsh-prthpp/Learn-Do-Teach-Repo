@@ -3,9 +3,11 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { ProjectCategory } from "@/types/content";
+import { defaultProjectCategory, topicCategories } from "@/lib/content-config";
+import { ProjectCategory, VideoCategory } from "@/types/content";
 
-const projectCategories: ProjectCategory[] = ["AI", "ML", "Data", "Cloud"];
+const projectCategories: ProjectCategory[] = [...topicCategories];
+const videoCategories: VideoCategory[] = [...topicCategories];
 
 function parseTags(value: FormDataEntryValue | null): string[] {
   return String(value ?? "")
@@ -16,7 +18,12 @@ function parseTags(value: FormDataEntryValue | null): string[] {
 
 function parseProjectCategory(value: FormDataEntryValue | null): ProjectCategory {
   const category = String(value ?? "");
-  return projectCategories.includes(category as ProjectCategory) ? (category as ProjectCategory) : "Cloud";
+  return projectCategories.includes(category as ProjectCategory) ? (category as ProjectCategory) : defaultProjectCategory;
+}
+
+function parseVideoCategory(value: FormDataEntryValue | null): VideoCategory {
+  const category = String(value ?? "");
+  return videoCategories.includes(category as VideoCategory) ? (category as VideoCategory) : "Cloud";
 }
 
 export async function signIn(formData: FormData) {
@@ -40,6 +47,7 @@ export async function upsertVideo(formData: FormData) {
     title: String(formData.get("title")),
     slug: String(formData.get("slug")),
     description: String(formData.get("description")),
+    category: parseVideoCategory(formData.get("category")),
     youtube_url: String(formData.get("youtube_url")),
     thumbnail_url: String(formData.get("thumbnail_url")) || null,
     tags: parseTags(formData.get("tags")),

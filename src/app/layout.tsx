@@ -5,10 +5,10 @@ import { Footer } from "@/components/layout/footer";
 
 export const metadata: Metadata = {
   title: {
-    default: "Tech Creator Portfolio",
-    template: "%s | Tech Creator"
+    default: "Learn Build Teach",
+    template: "%s | Learn Build Teach"
   },
-  description: "Professional portfolio for a tech creator showcasing videos, blog posts, and projects.",
+  description: "A personal portfolio and proof-of-learning platform built around teaching videos, blog posts, and projects.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000")
 };
 

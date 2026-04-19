@@ -7,6 +7,7 @@ export type Database = {
           title: string;
           slug: string;
           description: string;
+          category: "AI/ML" | "Data" | "Cloud";
           youtube_url: string;
           thumbnail_url: string | null;
           tags: string[];
@@ -18,6 +19,7 @@ export type Database = {
           title: string;
           slug: string;
           description: string;
+          category: "AI/ML" | "Data" | "Cloud";
           youtube_url: string;
           thumbnail_url?: string | null;
           tags?: string[];
@@ -56,7 +58,7 @@ export type Database = {
           id: string;
           name: string;
           slug: string;
-          category: "AI" | "ML" | "Data" | "Cloud";
+          category: "AI/ML" | "Data" | "Cloud";
           summary: string;
           description: string;
           github_url: string | null;
@@ -70,7 +72,7 @@ export type Database = {
           id?: string;
           name: string;
           slug: string;
-          category: "AI" | "ML" | "Data" | "Cloud";
+          category: "AI/ML" | "Data" | "Cloud";
           summary: string;
           description: string;
           github_url?: string | null;

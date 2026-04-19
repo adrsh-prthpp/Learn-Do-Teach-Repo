@@ -1,12 +1,15 @@
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
-export type ProjectCategory = "AI" | "ML" | "Data" | "Cloud";
+export type TopicCategory = "AI/ML" | "Cloud" | "Data";
+export type ProjectCategory = TopicCategory;
+export type VideoCategory = TopicCategory;
 
 export interface Video {
   id: string;
   title: string;
   slug: string;
   description: string;
+  category: VideoCategory;
   youtube_url: string;
   thumbnail_url: string | null;
   tags: string[];
@@ -40,3 +43,4 @@ export interface Project {
   featured: boolean;
   published_at: string;
 }
+

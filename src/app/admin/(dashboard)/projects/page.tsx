@@ -1,8 +1,8 @@
-import { InputField, TextareaField } from "@/components/admin/form-fields";
+import { AutoSlugFields } from "@/components/admin/auto-slug-fields";
+import { InputField, SelectField, TextareaField } from "@/components/admin/form-fields";
 import { deleteProject, upsertProject } from "@/lib/admin-actions";
+import { defaultProjectCategory, topicCategories } from "@/lib/content-config";
 import { getProjects } from "@/lib/content";
-
-const categories = ["AI", "ML", "Data", "Cloud"] as const;
 
 export default async function AdminProjectsPage() {
   const items = await getProjects();
@@ -11,18 +11,8 @@ export default async function AdminProjectsPage() {
     <div className="space-y-8">
       <h1 className="text-3xl font-semibold">Manage Projects</h1>
       <form action={upsertProject} className="grid gap-3 rounded-2xl border border-foreground/10 p-4">
-        <InputField label="Name" name="name" required />
-        <InputField label="Slug" name="slug" required />
-        <label className="block space-y-1 text-sm">
-          <span>Category</span>
-          <select name="category" defaultValue="Cloud" className="w-full rounded-lg border border-foreground/20 bg-transparent px-3 py-2">
-            {categories.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
-        </label>
+        <AutoSlugFields sourceLabel="Name" sourceName="name" sourcePlaceholder="LLM Ops Prompt Evaluator" />
+        <SelectField label="Category" name="category" options={topicCategories} defaultValue={defaultProjectCategory} />
         <TextareaField label="Summary" name="summary" rows={2} />
         <TextareaField label="Description" name="description" rows={5} />
         <InputField label="GitHub URL" name="github_url" />

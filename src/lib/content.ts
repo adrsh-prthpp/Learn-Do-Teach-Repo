@@ -14,7 +14,8 @@ async function tryQuery<T>(table: "videos" | "blog_posts" | "projects"): Promise
 }
 
 export async function getVideos(): Promise<Video[]> {
-  return (await tryQuery<Video>("videos")) ?? sampleVideos;
+  const data = await tryQuery<Video>("videos");
+  return data && data.length > 0 ? data : sampleVideos;
 }
 
 export async function getFeaturedVideos() {
@@ -25,6 +26,11 @@ export async function getFeaturedVideos() {
 export async function getVideoBySlug(slug: string) {
   const videos = await getVideos();
   return videos.find((item) => item.slug === slug) ?? null;
+}
+
+export async function getProjectByVideoSlug(videoSlug: string) {
+  const projects = await getProjects();
+  return projects.find((item) => item.video_slug === videoSlug) ?? null;
 }
 
 export async function getBlogPosts(): Promise<BlogPost[]> {

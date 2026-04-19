@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import { Tag } from "@/components/ui/tag";
 import { getProjectBySlug } from "@/lib/content";
 
@@ -17,10 +18,10 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       </div>
       <p className="max-w-3xl text-foreground/75">{project.description}</p>
       {project.image_url && <Image src={project.image_url} alt={project.name} width={1200} height={640} className="rounded-2xl object-cover" />}
-      <div className="flex flex-wrap gap-4 text-sm">
-        {project.github_url && <Link href={project.github_url} target="_blank" className="text-primary">GitHub</Link>}
-        {project.demo_url && <Link href={project.demo_url} target="_blank" className="text-primary">Live Demo</Link>}
-        {project.video_slug && <Link href={`/videos/${project.video_slug}`} className="text-primary">Related Video</Link>}
+      <div className="flex flex-wrap gap-4">
+        {project.github_url && <Button href={project.github_url}>GitHub</Button>}
+        {project.demo_url && <Button href={project.demo_url} className="border border-foreground/15 bg-background text-foreground">Live Demo</Button>}
+        {project.video_slug && <Button href={`/videos/${project.video_slug}`} className="bg-foreground text-background">Watch Related Video</Button>}
       </div>
     </article>
   );

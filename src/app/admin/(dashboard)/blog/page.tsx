@@ -1,3 +1,4 @@
+import { AutoSlugFields } from "@/components/admin/auto-slug-fields";
 import { InputField, TextareaField } from "@/components/admin/form-fields";
 import { deletePost, upsertPost } from "@/lib/admin-actions";
 import { getBlogPosts } from "@/lib/content";
@@ -9,8 +10,7 @@ export default async function AdminBlogPage() {
     <div className="space-y-8">
       <h1 className="text-3xl font-semibold">Manage Blog Posts</h1>
       <form action={upsertPost} className="grid gap-3 rounded-2xl border border-foreground/10 p-4">
-        <InputField label="Title" name="title" required />
-        <InputField label="Slug" name="slug" required />
+        <AutoSlugFields sourceLabel="Title" sourceName="title" sourcePlaceholder="Why Teaching Forces Better Understanding" />
         <TextareaField label="Excerpt" name="excerpt" rows={2} />
         <TextareaField label="Content (Markdown-friendly)" name="content" rows={10} />
         <InputField label="Cover Image URL" name="cover_image_url" />
