@@ -10,13 +10,13 @@ export function Footer() {
         </div>
 
         <div className="flex gap-4">
-          <Link href="https://github.com" target="_blank">
+          <Link href="https://github.com/adrsh-prthpp" target="_blank">
             GitHub
           </Link>
-          <Link href="https://linkedin.com" target="_blank">
+          <Link href="https://www.linkedin.com/in/adharsh-prathap-cs" target="_blank">
             LinkedIn
           </Link>
-          <Link href="https://youtube.com" target="_blank">
+          <Link href="https://youtube.com/@learnbyteaching-adharsh?si=drOxHZzuodQve2Sw" target="_blank">
             YouTube
           </Link>
         </div>

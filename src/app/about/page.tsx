@@ -13,9 +13,9 @@ export default function AboutPage() {
         <p className="text-sm font-medium uppercase tracking-[0.2em] text-foreground/50">About</p>
         <h1 className="text-4xl font-bold">I built this site to prove my learning by teaching it back.</h1>
         <p className="max-w-3xl text-lg leading-8 text-foreground/75">
-          The site is my personal learning system for tech. Instead of only taking notes privately, I turn concepts into
-          projects, videos, and writing so I can see whether I truly understand them. Helping other people is a great
-          side effect, but the main purpose is sharpening my own thinking.
+          This site is my personal learning system for tech. Instead of keeping notes private, I turn concepts into
+          projects, videos, and writing to see whether I truly understand them. Helping others is a great side effect,
+          but the main purpose is sharpening my own thinking.
         </p>
       </div>
 
@@ -31,9 +31,9 @@ export default function AboutPage() {
       <div className="space-y-4 rounded-3xl border border-foreground/10 bg-muted/50 p-6">
         <h2 className="text-2xl font-semibold">How I use the platform</h2>
         <p className="leading-7 text-foreground/75">
-          A topic usually starts as a question I want to understand better. I study it, build something small around it,
-          then publish the explanation as a video or post. Over time the site becomes a timeline of what I learned, how
-          I applied it, and how my understanding evolved.
+          Most topics start as a question I want to understand better. I study it, build something small around it, and
+          then explain it through a video or post. Over time, the site becomes a timeline of what I&apos;ve learned, how
+          I&apos;ve applied it, and how my understanding has evolved.
         </p>
       </div>
 
