@@ -27,7 +27,6 @@ export default async function VideosPage() {
 
       {topicCategories.map((category) => {
         const items = videos.filter((video) => video.category === category);
-        if (items.length === 0) return null;
 
         return (
           <section key={category} className="space-y-4 rounded-3xl border border-foreground/10 bg-background p-6">
@@ -35,11 +34,20 @@ export default async function VideosPage() {
               <h2 className="text-2xl font-semibold">{category}</h2>
               <p className="max-w-3xl text-sm leading-6 text-foreground/68">{categoryDescriptions[category]}</p>
             </div>
-            <div className="grid gap-6 md:grid-cols-2">
-              {items.map((video) => (
-                <VideoCard key={video.id} video={video} projectSlug={projectSlugByVideoSlug.get(video.slug)} />
-              ))}
-            </div>
+            {items.length > 0 ? (
+              <div className="grid gap-6 md:grid-cols-2">
+                {items.map((video) => (
+                  <VideoCard key={video.id} video={video} projectSlug={projectSlugByVideoSlug.get(video.slug)} />
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-2xl border border-dashed border-foreground/12 bg-muted/35 px-5 py-8">
+                <p className="text-sm font-medium text-foreground/70">No videos published in this track yet.</p>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-foreground/60">
+                  This section is part of the portfolio structure and will fill out as new explanations are added.
+                </p>
+              </div>
+            )}
           </section>
         );
       })}
