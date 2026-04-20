@@ -4,7 +4,7 @@ import { getProjects, getVideos } from "@/lib/content";
 
 export const metadata = {
   title: "Teaching Videos",
-  description: "Video explainers where I teach back what I am learning across AI, ML, Data, Cloud, Systems, and Web."
+  description: "Video explainers where I teach back what I am learning across AI/ML, Cloud, and Data."
 };
 
 export default async function VideosPage() {
@@ -15,13 +15,23 @@ export default async function VideosPage() {
 
   return (
     <section className="space-y-8">
-      <div className="max-w-3xl space-y-3">
-        <p className="text-sm font-medium uppercase tracking-[0.2em] text-foreground/50">Teaching Library</p>
-        <h1 className="text-4xl font-bold">Videos that turn studying into proof of learning.</h1>
-        <p className="text-lg leading-8 text-foreground/72">
-          Every video is published through YouTube and embedded here so the site becomes the organized archive of what I
-          am learning. The goal is not just to share tutorials. It is to pressure-test my own understanding by explaining
-          each topic clearly.
+      <div className="max-w-3xl space-y-4 border-b border-foreground/10 pb-8">
+        <p className="text-xs font-semibold uppercase tracking-[0.26em] text-foreground/50 sm:text-sm">
+          Teaching Library
+        </p>
+
+        <div className="space-y-3">
+          <h1 className="text-3xl font-semibold leading-[1.08] tracking-[-0.04em] text-foreground sm:text-4xl md:text-5xl">
+            Turning what I learn into clear explanations.
+          </h1>
+
+          <p className="max-w-2xl text-base leading-8 text-foreground/72 sm:text-lg">
+            Every video is part of my learning process. I study a topic, break it down, and explain it clearly.
+          </p>
+        </div>
+
+        <p className="text-sm leading-7 text-foreground/60 sm:text-base">
+          Each explanation is backed by a related project when applicable.
         </p>
       </div>
 
