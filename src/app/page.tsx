@@ -58,25 +58,6 @@ export default async function Home() {
 
       <section className="space-y-7">
         <div className={sectionHeaderClass}>
-          <p className={sectionEyebrowClass}>Focus Areas</p>
-          <h2 className={sectionTitleClass}>Topics I&apos;m currently learning</h2>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {topicCategories.map((category) => (
-            <article
-              key={category}
-              className="rounded-[1.5rem] border border-foreground/10 bg-background px-6 py-6 shadow-[0_16px_45px_rgba(15,23,42,0.04)]"
-            >
-              <h3 className="text-lg font-semibold tracking-[-0.02em] text-foreground">{category}</h3>
-              <p className="mt-3 text-sm leading-6 text-foreground/70">{categoryDescriptions[category]}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="space-y-7">
-        <div className={sectionHeaderClass}>
           <p className={sectionEyebrowClass}>Learn Build Teach</p>
           <h2 className={sectionTitleClass}>The loop behind the portfolio</h2>
         </div>
@@ -94,6 +75,25 @@ export default async function Home() {
                 </span>
               </div>
               <p className="mt-5 text-sm leading-7 text-foreground/72">{principle.description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="space-y-7">
+        <div className={sectionHeaderClass}>
+          <p className={sectionEyebrowClass}>Focus Areas</p>
+          <h2 className={sectionTitleClass}>Topics I&apos;m currently learning</h2>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {topicCategories.map((category) => (
+            <article
+              key={category}
+              className="rounded-[1.5rem] border border-foreground/10 bg-background px-6 py-6 shadow-[0_16px_45px_rgba(15,23,42,0.04)]"
+            >
+              <h3 className="text-lg font-semibold tracking-[-0.02em] text-foreground">{category}</h3>
+              <p className="mt-3 text-sm leading-6 text-foreground/70">{categoryDescriptions[category]}</p>
             </article>
           ))}
         </div>
