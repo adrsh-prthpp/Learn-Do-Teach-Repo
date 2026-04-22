@@ -20,7 +20,7 @@ async function getTableRows<T>(
 ): Promise<T[]> {
   const data = await tryQuery<T>(table);
   if (data && data.length > 0) return data;
-  return options?.fallbackToSample === false ? [] : fallbackData;
+  return options?.fallbackToSample ? fallbackData : [];
 }
 
 export async function getVideos(options?: { fallbackToSample?: boolean }): Promise<Video[]> {
