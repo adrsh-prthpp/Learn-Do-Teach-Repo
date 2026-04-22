@@ -9,7 +9,9 @@ export function AutoSlugFields({
   slugLabel = "Slug",
   slugName = "slug",
   sourcePlaceholder,
-  slugPlaceholder = "my-clean-url-slug"
+  slugPlaceholder = "my-clean-url-slug",
+  sourceDefaultValue,
+  slugDefaultValue
 }: {
   sourceLabel: string;
   sourceName: string;
@@ -17,11 +19,13 @@ export function AutoSlugFields({
   slugName?: string;
   sourcePlaceholder?: string;
   slugPlaceholder?: string;
+  sourceDefaultValue?: string;
+  slugDefaultValue?: string;
 }) {
   const sourceId = useId();
   const slugId = useId();
-  const [slug, setSlug] = useState("");
-  const [isSlugManuallyEdited, setIsSlugManuallyEdited] = useState(false);
+  const [slug, setSlug] = useState(slugDefaultValue ?? "");
+  const [isSlugManuallyEdited, setIsSlugManuallyEdited] = useState(Boolean(slugDefaultValue));
 
   return (
     <>
@@ -32,6 +36,7 @@ export function AutoSlugFields({
           name={sourceName}
           required
           placeholder={sourcePlaceholder}
+          defaultValue={sourceDefaultValue}
           className="w-full rounded-lg border border-foreground/20 bg-transparent px-3 py-2"
           onChange={(event) => {
             if (isSlugManuallyEdited) return;
