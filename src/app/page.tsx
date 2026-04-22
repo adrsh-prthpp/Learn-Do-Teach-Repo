@@ -37,49 +37,29 @@ export default async function Home() {
     allProjects.filter((project) => project.video_slug).map((project) => [project.video_slug as string, project.slug])
   );
 
-  const stats = [
-    { label: "Teaching videos", value: String(videos.length).padStart(2, "0") },
-    { label: "Project case studies", value: String(projects.length).padStart(2, "0") },
-    { label: "Writing pieces", value: String(posts.length).padStart(2, "0") }
-  ];
-
   return (
     <div className="space-y-16 pb-6 md:space-y-20">
       <HeroSection />
 
-      <section className="grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(240px,0.7fr)] lg:items-start">
-        <div className="rounded-[1.75rem] border border-foreground/10 bg-[linear-gradient(180deg,_rgba(248,250,252,0.95),_rgba(255,255,255,0.96))] p-7 shadow-[0_20px_60px_rgba(15,23,42,0.05)] sm:p-8">
-          <div className={sectionHeaderClass}>
-            <p className={sectionEyebrowClass}>Why This Exists</p>
-            <div className="max-w-3xl space-y-4">
-              <p className={sectionCopyClass}>
-                This portfolio exists to solidify, test, and prove my understanding of the topics I&apos;m learning.
-              </p>
-              <p className={sectionCopyClass}>
-                I believe true understanding comes from being able to teach something clearly. This site is where I
-                validate that, and document my progress along the way.
-              </p>
-            </div>
+      <section className="rounded-[1.75rem] border border-foreground/10 bg-[linear-gradient(180deg,_rgba(248,250,252,0.95),_rgba(255,255,255,0.96))] p-7 shadow-[0_20px_60px_rgba(15,23,42,0.05)] sm:p-8">
+        <div className={sectionHeaderClass}>
+          <p className={sectionEyebrowClass}>Why This Exists</p>
+          <div className="max-w-3xl space-y-4">
+            <p className={sectionCopyClass}>
+              This portfolio exists to solidify, test, and prove my understanding of the topics I&apos;m learning.
+            </p>
+            <p className={sectionCopyClass}>
+              I believe true understanding comes from being able to teach something clearly. This site is where I
+              validate that, and document my progress along the way.
+            </p>
           </div>
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
-          {stats.map((stat) => (
-            <div
-              key={stat.label}
-              className="rounded-[1.5rem] border border-foreground/10 bg-background px-5 py-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)]"
-            >
-              <p className="text-3xl font-semibold tracking-[-0.04em] text-foreground">{stat.value}</p>
-              <p className="mt-2 text-sm text-foreground/62">{stat.label}</p>
-            </div>
-          ))}
         </div>
       </section>
 
       <section className="space-y-7">
         <div className={sectionHeaderClass}>
           <p className={sectionEyebrowClass}>Focus Areas</p>
-          <h2 className={sectionTitleClass}>Topics I&apos;m learning in public</h2>
+          <h2 className={sectionTitleClass}>Topics I&apos;m currently learning</h2>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
