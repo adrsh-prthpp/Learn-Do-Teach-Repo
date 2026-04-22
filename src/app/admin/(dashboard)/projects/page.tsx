@@ -2,10 +2,10 @@ import { AutoSlugFields } from "@/components/admin/auto-slug-fields";
 import { InputField, SelectField, TextareaField } from "@/components/admin/form-fields";
 import { deleteProject, upsertProject } from "@/lib/admin-actions";
 import { defaultProjectCategory, topicCategories } from "@/lib/content-config";
-import { getProjects } from "@/lib/content";
+import { getAdminProjects } from "@/lib/content";
 
 export default async function AdminProjectsPage() {
-  const items = await getProjects();
+  const items = await getAdminProjects();
 
   return (
     <div className="space-y-8">
@@ -35,6 +35,11 @@ export default async function AdminProjectsPage() {
             </form>
           </div>
         ))}
+        {items.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-foreground/12 bg-muted/35 px-4 py-6 text-sm text-foreground/65">
+            No projects have been saved in the database yet.
+          </div>
+        ) : null}
       </div>
     </div>
   );

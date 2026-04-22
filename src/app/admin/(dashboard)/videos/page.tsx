@@ -2,10 +2,10 @@ import { AutoSlugFields } from "@/components/admin/auto-slug-fields";
 import { InputField, SelectField, TextareaField } from "@/components/admin/form-fields";
 import { deleteVideo, upsertVideo } from "@/lib/admin-actions";
 import { topicCategories } from "@/lib/content-config";
-import { getVideos } from "@/lib/content";
+import { getAdminVideos } from "@/lib/content";
 
 export default async function AdminVideosPage() {
-  const items = await getVideos();
+  const items = await getAdminVideos();
 
   return (
     <div className="space-y-8">
@@ -33,6 +33,11 @@ export default async function AdminVideosPage() {
             </form>
           </div>
         ))}
+        {items.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-foreground/12 bg-muted/35 px-4 py-6 text-sm text-foreground/65">
+            No videos have been saved in the database yet.
+          </div>
+        ) : null}
       </div>
     </div>
   );

@@ -13,9 +13,22 @@ async function tryQuery<T>(table: "videos" | "blog_posts" | "projects"): Promise
   }
 }
 
-export async function getVideos(): Promise<Video[]> {
-  const data = await tryQuery<Video>("videos");
-  return data && data.length > 0 ? data : sampleVideos;
+async function getTableRows<T>(
+  table: "videos" | "blog_posts" | "projects",
+  fallbackData: T[],
+  options?: { fallbackToSample?: boolean }
+): Promise<T[]> {
+  const data = await tryQuery<T>(table);
+  if (data && data.length > 0) return data;
+  return options?.fallbackToSample === false ? [] : fallbackData;
+}
+
+export async function getVideos(options?: { fallbackToSample?: boolean }): Promise<Video[]> {
+  return getTableRows("videos", sampleVideos, options);
+}
+
+export async function getAdminVideos(): Promise<Video[]> {
+  return getVideos({ fallbackToSample: false });
 }
 
 export async function getFeaturedVideos() {
@@ -33,8 +46,12 @@ export async function getProjectByVideoSlug(videoSlug: string) {
   return projects.find((item) => item.video_slug === videoSlug) ?? null;
 }
 
-export async function getBlogPosts(): Promise<BlogPost[]> {
-  return (await tryQuery<BlogPost>("blog_posts")) ?? samplePosts;
+export async function getBlogPosts(options?: { fallbackToSample?: boolean }): Promise<BlogPost[]> {
+  return getTableRows("blog_posts", samplePosts, options);
+}
+
+export async function getAdminBlogPosts(): Promise<BlogPost[]> {
+  return getBlogPosts({ fallbackToSample: false });
 }
 
 export async function getFeaturedPosts() {
@@ -47,8 +64,12 @@ export async function getPostBySlug(slug: string) {
   return posts.find((item) => item.slug === slug) ?? null;
 }
 
-export async function getProjects(): Promise<Project[]> {
-  return (await tryQuery<Project>("projects")) ?? sampleProjects;
+export async function getProjects(options?: { fallbackToSample?: boolean }): Promise<Project[]> {
+  return getTableRows("projects", sampleProjects, options);
+}
+
+export async function getAdminProjects(): Promise<Project[]> {
+  return getProjects({ fallbackToSample: false });
 }
 
 export async function getFeaturedProjects() {
@@ -60,4 +81,3 @@ export async function getProjectBySlug(slug: string) {
   const projects = await getProjects();
   return projects.find((item) => item.slug === slug) ?? null;
 }
-
