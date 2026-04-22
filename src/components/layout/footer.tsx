@@ -9,7 +9,7 @@ export function Footer() {
           <p>A proof-of-learning portfolio built around teaching videos, blog posts, and project case studies.</p>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-x-4 gap-y-2">
           <Link href="https://github.com/adrsh-prthpp" target="_blank">
             GitHub
           </Link>

@@ -15,10 +15,12 @@ export function ProjectCard({ project }: { project: Project }) {
           <Tag text={project.category} />
           {project.video_slug && <Tag text="has-video" />}
         </div>
-        <div className="flex flex-wrap gap-3 pt-1">
-          <Button href={`/projects/${project.slug}`}>View Project</Button>
+        <div className="grid gap-3 pt-1 sm:flex sm:flex-wrap">
+          <Button href={`/projects/${project.slug}`} className="w-full sm:w-auto">
+            View Project
+          </Button>
           {project.video_slug ? (
-            <Button href={`/videos/${project.video_slug}`} className="bg-foreground text-background">
+            <Button href={`/videos/${project.video_slug}`} className="w-full bg-foreground text-background sm:w-auto">
               Watch Video
             </Button>
           ) : null}

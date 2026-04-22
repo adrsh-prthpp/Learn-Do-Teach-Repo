@@ -28,10 +28,12 @@ export function VideoCard({ video, projectSlug }: { video: Video; projectSlug?: 
             <Tag key={tag} text={tag} />
           ))}
         </div>
-        <div className="flex flex-wrap gap-3 pt-1">
-          <Button href={`/videos/${video.slug}`}>Watch Video</Button>
+        <div className="grid gap-3 pt-1 sm:flex sm:flex-wrap">
+          <Button href={`/videos/${video.slug}`} className="w-full sm:w-auto">
+            Watch Video
+          </Button>
           {projectSlug ? (
-            <Button href={`/projects/${projectSlug}`} className="bg-foreground text-background">
+            <Button href={`/projects/${projectSlug}`} className="w-full bg-foreground text-background sm:w-auto">
               View Project
             </Button>
           ) : null}
