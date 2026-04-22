@@ -6,6 +6,8 @@ export const sampleVideos: Video[] = [
     title: "What Happens in a RAG Pipeline?",
     slug: "what-happens-in-a-rag-pipeline",
     description: "A teaching-first walkthrough of retrieval, embeddings, ranking, and response generation.",
+    why_this_video_exists:
+      "I made this explainer to pressure-test my understanding of how retrieval-augmented generation actually works across retrieval, ranking, and answer synthesis.",
     category: "AI/ML",
     youtube_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     thumbnail_url: "https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
@@ -18,6 +20,8 @@ export const sampleVideos: Video[] = [
     title: "How Feature Stores Help AI Teams Move Faster",
     slug: "how-feature-stores-help-ml-teams-move-faster",
     description: "A practical explanation of feature reuse, online vs. offline stores, and why this matters in production ML.",
+    why_this_video_exists:
+      "This video helps me turn a broad ML systems idea into a concrete explanation I can connect back to production tradeoffs.",
     category: "AI/ML",
     youtube_url: "https://www.youtube.com/watch?v=ysz5S6PUM-U",
     thumbnail_url: "https://i.ytimg.com/vi/ysz5S6PUM-U/maxresdefault.jpg",
@@ -30,6 +34,8 @@ export const sampleVideos: Video[] = [
     title: "System Design: API Gateway Patterns",
     slug: "api-gateway-patterns",
     description: "Practical API gateway design decisions for modern cloud and backend stacks.",
+    why_this_video_exists:
+      "I recorded this to make sure I could explain when API gateways help, when they add complexity, and how they fit into a real architecture.",
     category: "Cloud",
     youtube_url: "https://www.youtube.com/watch?v=jNQXAC9IVRw",
     thumbnail_url: "https://i.ytimg.com/vi/jNQXAC9IVRw/maxresdefault.jpg",

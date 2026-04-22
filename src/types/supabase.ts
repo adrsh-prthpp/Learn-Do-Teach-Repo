@@ -7,6 +7,7 @@ export type Database = {
           title: string;
           slug: string;
           description: string;
+          why_this_video_exists: string | null;
           category: "AI/ML" | "Data" | "Cloud";
           youtube_url: string;
           thumbnail_url: string | null;
@@ -19,6 +20,7 @@ export type Database = {
           title: string;
           slug: string;
           description: string;
+          why_this_video_exists?: string | null;
           category: "AI/ML" | "Data" | "Cloud";
           youtube_url: string;
           thumbnail_url?: string | null;

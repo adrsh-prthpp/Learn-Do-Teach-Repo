@@ -52,8 +52,8 @@ export default async function VideoDetailPage({ params }: { params: Promise<{ sl
       <section className="rounded-3xl border border-foreground/10 bg-muted/50 p-6">
         <h2 className="text-2xl font-semibold">Why this video exists</h2>
         <p className="mt-3 max-w-3xl leading-7 text-foreground/75">
-          This explainer is part of my learn-build-teach workflow. The point is to compress a topic into a clear,
-          teachable explanation so I can see whether I truly understand the concept and where I still need to go deeper.
+          {video.why_this_video_exists ||
+            "This explainer is part of my learn-build-teach workflow. The point is to compress a topic into a clear, teachable explanation so I can see whether I truly understand the concept and where I still need to go deeper."}
         </p>
       </section>
 

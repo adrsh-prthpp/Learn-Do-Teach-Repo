@@ -6,6 +6,7 @@ create table if not exists public.videos (
   title text not null,
   slug text not null unique,
   description text not null,
+  why_this_video_exists text,
   category text not null check (category in ('AI/ML', 'Data', 'Cloud')),
   youtube_url text not null,
   thumbnail_url text,

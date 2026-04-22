@@ -9,6 +9,7 @@ export interface Video {
   title: string;
   slug: string;
   description: string;
+  why_this_video_exists: string | null;
   category: VideoCategory;
   youtube_url: string;
   thumbnail_url: string | null;

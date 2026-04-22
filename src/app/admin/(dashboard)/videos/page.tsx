@@ -13,6 +13,11 @@ export default async function AdminVideosPage() {
       <form action={upsertVideo} className="grid gap-3 rounded-2xl border border-foreground/10 p-4">
         <AutoSlugFields sourceLabel="Title" sourceName="title" sourcePlaceholder="What Happens in a RAG Pipeline?" />
         <TextareaField label="Description" name="description" />
+        <TextareaField
+          label="Why This Video Exists"
+          name="why_this_video_exists"
+          rows={4}
+        />
         <SelectField label="Topic" name="category" options={topicCategories} defaultValue="Cloud" />
         <InputField label="YouTube URL" name="youtube_url" required />
         <InputField label="Thumbnail URL" name="thumbnail_url" />

@@ -47,6 +47,7 @@ export async function upsertVideo(formData: FormData) {
     title: String(formData.get("title")),
     slug: String(formData.get("slug")),
     description: String(formData.get("description")),
+    why_this_video_exists: String(formData.get("why_this_video_exists")) || null,
     category: parseVideoCategory(formData.get("category")),
     youtube_url: String(formData.get("youtube_url")),
     thumbnail_url: String(formData.get("thumbnail_url")) || null,
