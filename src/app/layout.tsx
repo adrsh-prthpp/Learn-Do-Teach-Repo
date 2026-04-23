@@ -9,7 +9,27 @@ export const metadata: Metadata = {
     template: "%s | Learn Build Teach"
   },
   description: "A personal portfolio and proof-of-learning platform built around teaching videos, blog posts, and projects.",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000")
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+  openGraph: {
+    title: "Learn Build Teach",
+    description: "A personal portfolio and proof-of-learning platform built around teaching videos, blog posts, and projects.",
+    siteName: "Learn Build Teach",
+    type: "website",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Learn Build Teach homepage preview"
+      }
+    ]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Learn Build Teach",
+    description: "A personal portfolio and proof-of-learning platform built around teaching videos, blog posts, and projects.",
+    images: ["/twitter-image"]
+  }
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
