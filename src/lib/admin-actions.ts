@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { defaultProjectCategory, topicCategories } from "@/lib/content-config";
+import { getYouTubeThumbnailUrl } from "@/lib/utils";
 import { ProjectCategory, VideoCategory } from "@/types/content";
 
 const projectCategories: ProjectCategory[] = [...topicCategories];
@@ -42,6 +43,8 @@ export async function signOut() {
 
 export async function upsertVideo(formData: FormData) {
   const supabase = await createClient();
+  const youtubeUrl = String(formData.get("youtube_url"));
+  const thumbnailUrl = String(formData.get("thumbnail_url")).trim();
   const payload = {
     id: String(formData.get("id") || "") || undefined,
     title: String(formData.get("title")),
@@ -49,8 +52,13 @@ export async function upsertVideo(formData: FormData) {
     description: String(formData.get("description")),
     why_this_video_exists: String(formData.get("why_this_video_exists")) || null,
     category: parseVideoCategory(formData.get("category")),
-    youtube_url: String(formData.get("youtube_url")),
-    thumbnail_url: String(formData.get("thumbnail_url")) || null,
+    youtube_url: youtubeUrl,
+    thumbnail_url:
+      (thumbnailUrl.includes("youtube.com") || thumbnailUrl.includes("youtu.be")
+        ? getYouTubeThumbnailUrl(thumbnailUrl)
+        : thumbnailUrl) ||
+      getYouTubeThumbnailUrl(youtubeUrl) ||
+      null,
     tags: parseTags(formData.get("tags")),
     featured: formData.get("featured") === "on",
     published_at: String(formData.get("published_at"))

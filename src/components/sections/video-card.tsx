@@ -2,13 +2,24 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Tag } from "@/components/ui/tag";
+import { getYouTubeThumbnailUrl } from "@/lib/utils";
 import { Video } from "@/types/content";
 
+const fallbackThumbnailUrl = "https://images.unsplash.com/photo-1492619375914-88005aa9e8fb";
+
 export function VideoCard({ video, projectSlug }: { video: Video; projectSlug?: string | null }) {
+  const providedThumbnailUrl = video.thumbnail_url?.trim() ?? "";
+  const thumbnailUrl =
+    (providedThumbnailUrl.includes("youtube.com") || providedThumbnailUrl.includes("youtu.be")
+      ? getYouTubeThumbnailUrl(providedThumbnailUrl)
+      : providedThumbnailUrl) ||
+    getYouTubeThumbnailUrl(video.youtube_url) ||
+    fallbackThumbnailUrl;
+
   return (
     <article className="group overflow-hidden rounded-2xl border border-foreground/10 bg-background">
       <Image
-        src={video.thumbnail_url || "https://images.unsplash.com/photo-1492619375914-88005aa9e8fb"}
+        src={thumbnailUrl}
         alt={video.title}
         width={800}
         height={450}
